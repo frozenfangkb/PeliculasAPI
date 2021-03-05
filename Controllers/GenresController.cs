@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Entities;
 using PeliculasAPI.Repositories;
 using System;
@@ -9,51 +12,48 @@ using System.Threading.Tasks;
 namespace PeliculasAPI.Controllers
 {
     [Route("api/genres")]
+    [ApiController]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GenresController : ControllerBase
     {
-        private readonly IRepo repo;
+        private readonly AppDbContext context;
 
-        public GenresController(IRepo repo)
+        public GenresController(AppDbContext context)
         {
-            this.repo = repo;
+            this.context = context;
         }
 
         [HttpGet]
         [HttpGet("list")]
-        public List<Genres> Get()
+        public async Task<List<Genres>> Get()
         {
-            return repo.GetAllGenres();
+            return await context.Genres.ToListAsync();
         }
 
-        [HttpGet("{Id:int}")]
-        public Genres Get(int Id)
+        /*[HttpGet("{Id:int}")]
+        public async Task<ActionResult<Genres>> Get(int Id)
         {
-            Genres genre = repo.GetById(Id);
-
-            if (genre == null)
-            {
-                //return NotFound();
-            }
-
-            return genre;
-        }
+            
+        }*/
 
         [HttpPost]
-        public void Post()
+        public async Task<ActionResult> Post([FromBody] Genres genre)
         {
-
+            context.Add(genre);
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPut]
-        public void Put()
+        public ActionResult Put([FromBody] Genres genre)
         {
-
+            return NoContent();
         }
 
         [HttpDelete]
-        public void Delete()
+        public ActionResult Delete()
         {
-
+            return NoContent();
         }
 
     }

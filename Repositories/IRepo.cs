@@ -9,6 +9,6 @@ namespace PeliculasAPI.Repositories
     public interface IRepo
     {
         List<Genres> GetAllGenres();
-        Genres GetById(int Id);
+        Task<Genres> GetById(int Id);
     }
 }

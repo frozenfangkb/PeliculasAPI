@@ -24,8 +24,9 @@ namespace PeliculasAPI.Repositories
             return _genres;
         }
 
-        public Genres GetById(int Id)
+        public async Task<Genres> GetById(int Id)
         {
+            await Task.Delay(1);
             return _genres.FirstOrDefault(x => x.Id == Id);
         }
     }
